@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets | Arnaud Barotteaux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            height: 60vh;
+            width: 100%;
+            position: relative;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            z-index: 3;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+        
+        nav ul li a.active {
+            border-bottom: 1px solid white;
+            padding-bottom: 3px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-top: auto;
+            margin-bottom: auto;
+            padding-bottom: 80px;
+        }
+
+        .page-title h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .page-title p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* Particules flottantes */
+        .floating-particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        /* Projets */
+        .projects-container {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .project-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-image {
+            height: 250px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .project-tags {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 5px 12px;
+            font-size: 0.7rem;
+            border-radius: 50px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .project-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-link {
+            display: inline-block;
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            transition: opacity 0.3s;
+        }
+
+        .project-link:hover {
+            opacity: 0.7;
+        }
+
+        .filtres {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .filtre-btn {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            color: #666;
+            padding: 0.5rem 1.5rem;
+            margin: 0 0.5rem 1rem 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .filtre-btn:hover, .filtre-btn.active {
+            color: #333;
+        }
+
+        .filtre-btn.active {
+            border-bottom: 2px solid #333;
+        }
+
+        /* Plus de projets */
+        .more-projects {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .more-projects-btn {
+            display: inline-block;
+            background-color: white;
+            color: #333;
+            border: 1px solid #333;
+            padding: 0.8rem 2.5rem;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .more-projects-btn:hover {
+            background-color: #333;
+            color: white;
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            background-color: #f9f9f9;
+            padding: 5rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-text {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background-color: #333;
+            color: white;
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .cta-btn:hover {
+            background-color: #222;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-subtitle {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+
+        .social-icons {
+            margin-bottom: 2rem;
+        }
+
+        .social-icons a {
+            color: white;
+            margin: 0 1rem;
+            font-size: 1.5rem;
+            transition: opacity 0.3s;
+        }
+
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+
+        .copyright {
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: 50vh;
+            }
+            
+            .page-title h1 {
+                font-size: 2.5rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul li {
+                margin-left: 1.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="hero">
+        <img src="/desert.jpg" alt="Paysage désert minimaliste" class="hero-image">
+        <div class="overlay"></div>
+        <div class="content">
+            <header>
+                <div class="logo">
+                    ARNAUD BAROTTEAUX
+                    <div class="subtitle">DEEN DESIGNER</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">ACCUEIL</a></li>
+                        <li><a href="projets.html" class="active">PROJETS</a></li>
+                        <li><a href="competences.html">COMPÉTENCES</a></li>
+                        <li><a href="contact.html">CONTACT</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="page-title">
+                <h1>MES PROJETS</h1>
+                <p>Découvrez une sélection de mes réalisations en développement web et design</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="projects-container">
+        <div class="filtres">
+            <button class="filtre-btn active" data-filter="tous">TOUS</button>
+            <button class="filtre-btn" data-filter="web">DÉVELOPPEMENT WEB</button>
+            <button class="filtre-btn" data-filter="mobile">APPLICATIONS MOBILES</button>
+            <button class="filtre-btn" data-filter="design">UI/UX DESIGN</button>
+            <button class="filtre-btn" data-filter="branding">BRANDING</button>
+        </div>
+
+        <div class="projects-grid">
+            <!-- Projet 1 -->
+            <div class="project-card" data-category="web design">
+                <img src="/image.png" alt="Projet E-commerce" class="project-image">
+                <div class="project-overlay"></div>
+                <div class="project-tags">
+                    <span class="project-tag">Portfolio</span>
+                    <span class="project-tag">games</span>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Portfolio interactif</h3>
+                    <p class="project-description">recueil soigneusement organisé de mes meilleurs travaux, mettant en valeur mon expertise, ma créativité et mon parcours professionnel. Il présente une sélection de projets significatifs qui illustrent mes compétences techniques et mon approche créative dans mon domaine. Servant de vitrine visuelle de mon identité professionnelle, il m'aide à me démarquer auprès des employeurs et clients potentiels.</p>
+                    <a href="https://portfolio-chi-neon-30.vercel.app/" class="project-link">Voir le projet →</a>
+                </div>
+            </div>
+
+            <!-- Projet 2 -->
+            <div class="project-card" data-category="mobile design">
+                <img src="/e-co.png" alt="Application mobile" class="project-image">
+                <div class="project-overlay"></div>
+                <div class="project-tags">
+                    <span class="project-tag">E-commerce</span>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Site de E-commerce</h3>
+                    <p class="project-description">Conception et développement d'une plateforme e-commerce pour artisans locaux avec système de paiement intégré et gestion de stock intelligente.</p>
+                    <a href="https://e-commerce-eight-brown-98.vercel.app/" class="project-link">Voir le projet →</a>
+                </div>
+            </div>
+
+            <!-- Projet 3 -->
+            <div class="project-card" data-category="web branding">
+                <img src="/api/placeholder/400/250" alt="Site corporate" class="project-image">
+                <div class="project-overlay"></div>
+                <div class="project-tags">
+                    <span class="project-tag">WordPress</span>
+                    <span class="project-tag">SEO</span>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Refonte Site Corporate</h3>
+                    <p class="project-description">Refonte complète de l'identité visuelle et du site web d'une entreprise spécialisée en conseil financier.</p>
+                    <a href="projet-corporate.html" class="project-link">Voir le projet →</a>
+                </div>
+            </div>
+
+            <!-- Projet 4 -->
+            <div class="project-card" data-category="web design">
+                <img src="/api/placeholder/400/250" alt="Dashboard analytics" class="project-image">
+                <div class="project-overlay"></div>
+                <div class="project-tags">
+                    <span class="project-tag">Vue.js</span>
+                    <span class="project-tag">Data Viz</span>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Dashboard Analytics</h3>
+                    <p class="project-description">Tableau de bord interactif permettant la visualisation et l'analyse de données marketing avec graphiques en temps réel.</p>
+                    <a href="projet-dashboard.html" class="project-link">Voir le projet →</a>
+                </div>
+            </div>
+
+            <!-- Projet 5 -->
+            <div class="project-card" data-category="web mobile">
+                <img src="/api/placeholder/400/250" alt="SaaS platform" class="project-image">
+                <div class="project-overlay"></div>
+                <div class="project-tags">
+                    <span class="project-tag">SaaS</span>
+                    <span class="project-tag">Full-Stack</span>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Plateforme SaaS</h3>
+                    <p class="project-description">Développement d'une solution SaaS de gestion de projets avec authentification multi-niveaux et intégrations tierces.</p>
+                    <a href="projet-saas.html" class="project-link">Voir le projet →</a>
+                </div>
+            </div>
+
+            <!-- Projet 6 -->
+            <div class="project-card" data-category="mobile design">
+                <img src="/api/placeholder/400/250" alt="PWA" class="project-image">
+                <div class="project-overlay"></div>
+                <div class="project-tags">
+                    <span class="project-tag">PWA</span>
+                    <span class="project-tag">JavaScript</span>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Application Web Progressive</h3>
+                    <p class="project-description">PWA pour service de livraison local avec fonctionnalités offline, notifications push et géolocalisation en temps réel.</p>
+                    <a href="projet-pwa.html" class="project-link">Voir le projet →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="more-projects">
+            <a href="#" class="more-projects-btn">Charger plus de projets</a>
+        </div>
+    </div>
+
+    <section class="contact-cta">
+        <div class="cta-content">
+            <h2 class="cta-title">Un projet en tête ?</h2>
+            <p class="cta-text">Discutons ensemble de votre idée et voyons comment je peux vous aider à la concrétiser. Je suis disponible pour des collaborations freelance ou des projets de plus grande envergure.</p>
+            <a href="contact.html" class="cta-btn">Me contacter</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">ARNAUD BAROTTEAUX</div>
+            <div class="footer-subtitle">DEEN DESIGNER</div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-dribbble"></i></a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 Arnaud Barotteaux. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Effet de parallaxe sur l'image d'en-tête
+            window.addEventListener('scroll', function() {
+                const headerImage = document.querySelector('.hero-image');
+                const scrollPosition = window.scrollY;
+                headerImage.style.transform = `translateY(${scrollPosition * 0.4}px)`;
+            });
+            
+            // Animation d'apparition des projets
+            const projectCards = document.querySelectorAll('.project-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = 1;
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100); // Animation séquentielle
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            projectCards.forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Filtres de projets
+            const filtreButtons = document.querySelectorAll('.filtre-btn');
+            
+            filtreButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Mettre à jour l'état actif des boutons
+                    filtreButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Filtrer les projets
+                    projectCards.forEach(card => {
+                        const categories = card.getAttribute('data-category').split(' ');
+                        
+                        // Réinitialiser les animations pour les cartes filtrées
+                        card.style.opacity = 0;
+                        card.style.transform = 'translateY(30px)';
+                        
+                        if (filter === 'tous' || categories.includes(filter)) {
+                            card.style.display = 'block';
+                            // Réapparition animée
+                            setTimeout(() => {
+                                card.style.opacity = 1;
+                                card.style.transform = 'translateY(0)';
+                            }, 100);
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Créer des particules flottantes sur toute la page
+            let activeParticles = 0;
+            const maxParticles = 80;
+            
+            function createFloatingParticles() {
+                if (activeParticles >= maxParticles) {
+                    setTimeout(createFloatingParticles, 1000);
+                    return;
+                }
+                
+                const totalParticles = 40;
+                
+                for (let i = 0; i < totalParticles; i++) {
+                    setTimeout(() => {
+                        if (activeParticles >= maxParticles) return;
+                        
+                        activeParticles++;
+                        
+                        const particle = document.createElement('div');
+                        particle.className = 'floating-particle';
+                        
+                        const size = Math.random() * 1.2 + 0.4;
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        
+                        const startX = Math.random() * window.innerWidth;
+                        const startY = Math.random() * window.innerHeight;
+                        
+                        particle.style.left = startX + 'px';
+                        particle.style.top = startY + 'px';
+                        particle.style.opacity = Math.random() * 0.5 + 0.2;
+                        
+                        document.body.appendChild(particle);
+                        
+                        anime({
+                            targets: particle,
+                            translateX: function() {
+                                return anime.random(200, 500) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            translateY: function() {
+                                return anime.random(-100, 150) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            opacity: [
+                                { value: Math.random() * 0.7 + 0.3, duration: 500 },
+                                { value: 0, duration: 500, delay: 5000 }
+                            ],
+                            duration: 6000,
+                            easing: 'easeOutSine',
+                            complete: function() {
+                                particle.remove();
+                                activeParticles--;
+                            }
+                        });
+                    }, i * 100);
+                }
+                
+                setTimeout(createFloatingParticles, 10000);
+            }
+            
+            createFloatingParticles();
+        });
+    </script>
+</body>
+</html>

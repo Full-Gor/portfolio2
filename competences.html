@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arnaud Barotteaux | Compétences</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            color: #333;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            height: 60vh;
+            width: 100%;
+            position: relative;
+            background-color: #f5f5f5;
+        }
+
+        .hero-image {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            z-index: 3;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 3px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+
+        .hero-text {
+            max-width: 800px;
+            margin-top: 6rem;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .slogan {
+            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        /* Particules flottantes sur toute la page */
+        .floating-particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        /* Section des compétences */
+        .skills-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 4rem 2rem;
+        }
+
+        .skills-category {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: #333;
+        }
+
+        .skill-item {
+            margin-bottom: 2rem;
+        }
+
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .skill-name span {
+            font-size: 1rem;
+        }
+
+        .skill-bar {
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background-color: #333;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 1s ease-out;
+        }
+
+        .skill-progress.animate {
+            transform: scaleX(1);
+        }
+
+        /* Section expérience professionnelle */
+        .experience-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+            background-color: #f9f9f9;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #ddd;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        .timeline-item {
+            padding: 1.5rem 3rem;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            top: 25px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #333;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+
+        .timeline-content {
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-company {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Section éducation */
+        .education-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .education-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .education-card {
+            flex: 0 0 calc(33.33% - 2rem);
+            min-width: 300px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+
+        .education-card.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .education-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .education-card-content {
+            padding: 2rem;
+        }
+
+        .education-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .education-title {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .education-school {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .education-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icons a {
+            color: white;
+            margin: 0 1rem;
+            font-size: 1.5rem;
+            transition: opacity 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+
+        .copyright {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: 70vh;
+            }
+
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 1.5rem;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+
+            .timeline-item::after {
+                left: 21px;
+                top: 25px;
+            }
+
+            .timeline-item:nth-child(even)::after {
+                left: 21px;
+            }
+
+            .education-card {
+                flex: 0 0 100%;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+            }
+
+            nav ul li {
+                margin-left: 0;
+                margin-right: 1.5rem;
+            }
+
+            .hero-text {
+                margin-top: 10rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="hero">
+        <img src="/desert.jpg" alt="Arbre isolé dans un désert de neige" class="hero-image">
+        <div class="overlay"></div>
+        <div class="content">
+            <header>
+                <div class="logo">
+                    ARNAUD BAROTTEAUX
+                    <div class="subtitle">DEEN DESIGNER</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">ACCUEIL</a></li>
+                        <li><a href="projets.html">PROJETS</a></li>
+                        <li><a href="competences.html">COMPÉTENCES</a></li>
+                        <li><a href="contact.html">CONTACT</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="hero-text">
+                <h1>MES COMPÉTENCES</h1>
+                <p class="slogan">L'innovation naît de la maîtrise technique<br>et de la créativité sans limites</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Section Compétences Techniques -->
+    <section class="skills-section">
+        <h2 class="section-title">EXPERTISES TECHNIQUES</h2>
+        
+        <div class="skills-container">
+            <div class="skills-category">
+                <h3 class="category-title">Développement Front-end</h3>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>HTML5 / CSS3</span>
+                        <span>95%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>JavaScript (ES6+)</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>React</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Vue.js</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>SASS / LESS</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skills-category">
+                <h3 class="category-title">Développement Back-end</h3>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Node.js</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Express</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>PHP</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 75%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>MySQL / MongoDB</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>API RESTful</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skills-category">
+                <h3 class="category-title">Design & Outils</h3>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Figma</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Adobe XD</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>UI/UX Design</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Git / GitHub</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>Docker</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Section Expérience Professionnelle -->
+    <section class="experience-section">
+        <h2 class="section-title">EXPÉRIENCE PROFESSIONNELLE</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2023 - Présent</div>
+                    <h3 class="timeline-title">Lead Developer Front-end</h3>
+                    <div class="timeline-company">Digital Solutions Agency, Paris</div>
+                    <p class="timeline-description">Direction d'une équipe de 5 développeurs front-end sur des projets d'envergure nationale. Mise en place de méthodologies agiles et d'une architecture micro-frontend. Optimisation des performances et de l'accessibilité pour des applications à fort trafic.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2020 - 2023</div>
+                    <h3 class="timeline-title">Développeur Full-Stack Senior</h3>
+                    <div class="timeline-company">WebTech Solutions, Paris</div>
+                    <p class="timeline-description">Développement d'applications web et mobiles pour des clients du secteur financier et e-commerce. Responsable de l'architecture technique et de l'optimisation des performances. Mise en place de CI/CD et de tests automatisés.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2018 - 2020</div>
+                    <h3 class="timeline-title">Développeur Front-end</h3>
+                    <div class="timeline-company">StartupLab, Lyon</div>
+                    <p class="timeline-description">Création d'interfaces utilisateur pour diverses applications SaaS. Développement de composants réutilisables avec React et mise en place de solutions d'état global. Collaboration étroite avec les designers UX/UI.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2016 - 2018</div>
+                    <h3 class="timeline-title">Développeur Web Junior</h3>
+                    <div class="timeline-company">Agence Digitale, Bordeaux</div>
+                    <p class="timeline-description">Développement et maintenance de sites web pour des clients variés. Intégration de maquettes, optimisation SEO et mise en place de CMS. Premières expériences avec les frameworks JavaScript.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Section Éducation -->
+    <section class="education-section">
+        <h2 class="section-title">FORMATION</h2>
+        
+        <div class="education-cards">
+            <div class="education-card">
+                <div class="education-card-content">
+                    <div class="education-date">2014 - 2016</div>
+                    <h3 class="education-title">Master en Développement Web & Mobile</h3>
+                    <div class="education-school">École Supérieure du Digital, Paris</div>
+                    <p class="education-description">Formation avancée en développement d'applications web et mobiles. Spécialisation en technologies front-end et expérience utilisateur. Projet de fin d'études réalisé en partenariat avec une startup tech.</p>
+                </div>
+            </div>
+            
+            <div class="education-card">
+                <div class="education-card-content">
+                    <div class="education-date">2011 - 2014</div>
+                    <h3 class="education-title">Licence en Informatique</h3>
+                    <div class="education-school">Université de Lyon</div>
+                    <p class="education-description">Formation généraliste en sciences informatiques. Modules en algorithmique, programmation orientée objet, bases de données et réseaux. Stage de fin d'études dans une ESN.</p>
+                </div>
+            </div>
+            
+            <div class="education-card">
+                <div class="education-card-content">
+                    <div class="education-date">2020</div>
+                    <h3 class="education-title">Certification UI/UX Design</h3>
+                    <div class="education-school">Design Academy Online</div>
+                    <p class="education-description">Formation intensive aux principes du design d'interface et de l'expérience utilisateur. Études de cas, workshops et projets pratiques sur des problématiques réelles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-dribbble"></i></a>
+        </div>
+        <div class="copyright">
+            &copy; 2025 Arnaud Barotteaux. Tous droits réservés.
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation des barres de compétences
+            setTimeout(() => {
+                const skillBars = document.querySelectorAll('.skill-progress');
+                skillBars.forEach(bar => {
+                    bar.classList.add('animate');
+                });
+            }, 300);
+            
+            // Animation de la timeline et des cartes d'éducation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('appear');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                observer.observe(item);
+            });
+            
+            const educationCards = document.querySelectorAll('.education-card');
+            educationCards.forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Effet de parallaxe sur l'image d'en-tête
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('.hero-image');
+                const scrollPosition = window.scrollY;
+                if (header) {
+                    header.style.transform = `translateY(${scrollPosition * 0.4}px)`;
+                }
+            });
+            
+            // Créer des particules flottantes
+            let activeParticles = 0;
+            const maxParticles = 80;
+            
+            function createFloatingParticles() {
+                if (activeParticles >= maxParticles) {
+                    setTimeout(createFloatingParticles, 1000);
+                    return;
+                }
+                
+                const totalParticles = 40;
+                
+                for (let i = 0; i < totalParticles; i++) {
+                    setTimeout(() => {
+                        if (activeParticles >= maxParticles) return;
+                        
+                        activeParticles++;
+                        
+                        const particle = document.createElement('div');
+                        particle.className = 'floating-particle';
+                        
+                        const size = Math.random() * 1.2 + 0.4;
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        
+                        const startX = Math.random() * window.innerWidth;
+                        const startY = Math.random() * window.innerHeight;
+                        
+                        particle.style.left = startX + 'px';
+                        particle.style.top = startY + 'px';
+                        particle.style.opacity = Math.random() * 0.5 + 0.2;
+                        
+                        document.body.appendChild(particle);
+                        
+                        anime({
+                            targets: particle,
+                            translateX: function() {
+                                return anime.random(200, 500) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            translateY: function() {
+                                return anime.random(-100, 150) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            opacity: [
+                                { value: Math.random() * 0.7 + 0.3, duration: 500 },
+                                { value: 0, duration: 500, delay: 5000 }
+                            ],
+                            duration: 6000,
+                            easing: 'easeOutSine',
+                            complete: function() {
+                                particle.remove();
+                                activeParticles--;
+                            }
+                        });
+                    }, i * 100);
+                }
+                
+                setTimeout(createFloatingParticles, 10000);
+            }
+            
+            createFloatingParticles();
+        });
+    </script>
+</body>
+</html>

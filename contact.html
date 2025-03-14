@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Arnaud Barotteaux | Développeur Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: #333;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        .header {
+            height: 60vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-image {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            z-index: 1000;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .navbar.scrolled {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 3px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+
+        .active {
+            border-bottom: 1px solid white;
+            padding-bottom: 3px;
+        }
+
+        .page-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            color: white;
+            text-align: center;
+            width: 100%;
+        }
+
+        .page-title h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .page-title p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-details {
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item i {
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            color: #333;
+        }
+
+        .contact-item a {
+            color: #333;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .contact-item a:hover {
+            opacity: 0.7;
+        }
+
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #222;
+        }
+
+        footer {
+            background-color: #222;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icons a {
+            color: white;
+            margin: 0 1rem;
+            font-size: 1.5rem;
+            transition: opacity 0.3s;
+        }
+
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+
+        .copyright {
+            opacity: 0.7;
+        }
+
+        /* Particules flottantes sur toute la page */
+        .floating-particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        /* Style spécifique pour la carte de localisation */
+        .location-card {
+            margin-top: 3rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-map {
+            width: 100%;
+            height: 300px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+
+        .availability {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .availability h4 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .availability-status {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .status-text {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.2rem;
+            }
+            
+            .navbar {
+                padding: 1.5rem;
+            }
+            
+            .contact-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <!-- Page Contact -->
+    <section id="contact" class="page">
+        <div class="header">
+            <img src="/desert.jpg" alt="Paysage minimaliste" class="header-image">
+            <div class="overlay"></div>
+            <div class="navbar">
+                <div class="logo">
+                    ARNAUD BAROTTEAUX
+                    <div class="subtitle">DEEN DESIGNER</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">ACCUEIL</a></li>
+                        <li><a href="projets.html">PROJETS</a></li>
+                        <li><a href="competences.html">COMPÉTENCES</a></li>
+                        <li><a href="contact.html" class="active">CONTACT</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="page-title">
+                <h1>ME CONTACTER</h1>
+                <p>Discutons de votre projet et transformons vos idées en réalité numérique.</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Parlons de votre projet</h3>
+                    <p>Vous avez un projet ou une idée ? N'hésitez pas à me contacter pour discuter de la façon dont je peux vous aider à le concrétiser. Je suis disponible pour des missions freelance, des collaborations ou des postes permanents.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:contact@arnaudbarotteaux.com">contact@arnaudbarotteaux.com</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+33600000000">+33 6 00 00 00 00</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Paris, France</span>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fab fa-linkedin"></i>
+                            <a href="https://linkedin.com/in/arnaud-barotteaux" target="_blank">linkedin.com/in/arnaud-barotteaux</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fab fa-github"></i>
+                            <a href="https://github.com/arnaudbarotteaux" target="_blank">github.com/arnaudbarotteaux</a>
+                        </div>
+                    </div>
+                    
+                    <div class="availability">
+                        <h4>Disponibilité actuelle</h4>
+                        <p>Je suis actuellement ouvert à de nouvelles opportunités et projets intéressants.</p>
+                        <div class="availability-status">
+                            <div class="status-indicator"></div>
+                            <span class="status-text">Disponible pour de nouveaux projets</span>
+                        </div>
+                    </div>
+                    
+                    <div class="location-card">
+                        <div class="location-map">
+                            <img src="/api/placeholder/600/300" alt="Carte de localisation" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form action="#" method="POST" id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Nom complet</label>
+                            <input type="text" id="name" name="name" required placeholder="Votre nom">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Adresse email</label>
+                            <input type="email" id="email" name="email" required placeholder="votre.email@exemple.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Téléphone (optionnel)</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Votre numéro de téléphone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Sujet</label>
+                            <input type="text" id="subject" name="subject" required placeholder="L'objet de votre message">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="project-type">Type de projet</label>
+                            <select id="project-type" name="project-type" required>
+                                <option value="" disabled selected>Sélectionnez une option</option>
+                                <option value="site-web">Site web</option>
+                                <option value="application">Application web</option>
+                                <option value="e-commerce">E-commerce</option>
+                                <option value="refonte">Refonte de site</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="budget">Budget approximatif (optionnel)</label>
+                            <select id="budget" name="budget">
+                                <option value="" disabled selected>Sélectionnez une option</option>
+                                <option value="moins-5k">Moins de 5 000 €</option>
+                                <option value="5k-10k">5 000 € - 10 000 €</option>
+                                <option value="10k-20k">10 000 € - 20 000 €</option>
+                                <option value="plus-20k">Plus de 20 000 €</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Détails du projet</label>
+                            <textarea id="message" name="message" required placeholder="Décrivez votre projet, vos besoins et vos objectifs..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="privacy" required>
+                                J'accepte que mes données soient utilisées uniquement dans le cadre de ma demande
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Envoyer le message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-icons">
+            <a href="https://linkedin.com/in/arnaud-barotteaux" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/arnaudbarotteaux" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-dribbble"></i></a>
+        </div>
+        <div class="copyright">
+            &copy; 2025 Arnaud Barotteaux. Tous droits réservés.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Effet de parallaxe sur les images d'en-tête
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('.header-image');
+                const scrollPosition = window.scrollY;
+                header.style.transform = `translateY(${scrollPosition * 0.4}px)`;
+                
+                // Changement de style de la navbar au scroll
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+            
+            // Animation du formulaire
+            const formElements = document.querySelectorAll('.form-group');
+            formElements.forEach((element, index) => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                setTimeout(() => {
+                    element.style.opacity = 1;
+                    element.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+            
+            // Créer des particules flottantes sur toute la page
+            let activeParticles = 0;
+            const maxParticles = 80;
+            
+            function createFloatingParticles() {
+                if (activeParticles >= maxParticles) {
+                    setTimeout(createFloatingParticles, 1000);
+                    return;
+                }
+                
+                const totalParticles = 40;
+                
+                for (let i = 0; i < totalParticles; i++) {
+                    setTimeout(() => {
+                        if (activeParticles >= maxParticles) return;
+                        
+                        activeParticles++;
+                        
+                        const particle = document.createElement('div');
+                        particle.className = 'floating-particle';
+                        
+                        const size = Math.random() * 1.2 + 0.4;
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        
+                        const startX = Math.random() * window.innerWidth;
+                        const startY = Math.random() * window.innerHeight;
+                        
+                        particle.style.left = startX + 'px';
+                        particle.style.top = startY + 'px';
+                        particle.style.opacity = Math.random() * 0.5 + 0.2;
+                        
+                        document.body.appendChild(particle);
+                        
+                        anime({
+                            targets: particle,
+                            translateX: function() {
+                                return anime.random(200, 500) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            translateY: function() {
+                                return anime.random(-100, 150) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            opacity: [
+                                { value: Math.random() * 0.7 + 0.3, duration: 500 },
+                                { value: 0, duration: 500, delay: 5000 }
+                            ],
+                            duration: 6000,
+                            easing: 'easeOutSine',
+                            complete: function() {
+                                particle.remove();
+                                activeParticles--;
+                            }
+                        });
+                    }, i * 100);
+                }
+                
+                setTimeout(createFloatingParticles, 10000);
+            }
+            
+            createFloatingParticles();
+            
+            // Gestion du formulaire
+            const contactForm = document.getElementById('contact-form');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simuler l'envoi du formulaire
+                const submitBtn = contactForm.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Envoi en cours...';
+                
+                setTimeout(() => {
+                    // Réinitialiser le formulaire après simulation d'envoi
+                    contactForm.reset();
+                    submitBtn.textContent = 'Message envoyé !';
+                    
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }, 3000);
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
