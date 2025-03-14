@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arnaud Barotteaux | Développeur Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+        }
+
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            background-color: #f5f5f5;
+        }
+
+        .hero-image {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            z-index: 3;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    opacity: 0.9;
+    margin-top: 5px;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+}
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+        
+        /* Particules flottantes sur toute la page */
+        .floating-particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        .hero-text {
+            max-width: 800px;
+            margin-bottom: 6rem;
+            position: relative;
+            bottom: 50px; /* Remonte le slogan de 50px */
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .slogan {
+            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .footer {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .hero-text {
+                margin-bottom: 3rem;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="hero">
+        <img src="/desert.jpg" alt="Arbre isolé dans un désert de neige" class="hero-image">
+        <div class="overlay"></div>
+        <div class="content">
+            <header>
+                <div class="logo">
+                    ARNAUD BAROTTEAUX
+                    <div class="subtitle">DEEN DESIGNER</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#projets">PROJETS</a></li>
+                        <li><a href="#competences">COMPÉTENCES</a></li>
+                        <li><a href="#contact">CONTACT</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="hero-text">
+                <h1>Développeur Web</h1>
+                <p class="slogan">Donnez vie à vos idées<br> avec le bon code tout prend racine.</p>
+            </div>
+            
+            <div class="footer">
+                &copy; 2025 Arnaud Barotteaux. Tous droits réservés.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Créer des particules flottantes sur toute la page
+            // Limiter le nombre de particules actives
+            let activeParticles = 0;
+            const maxParticles = 100; // Nombre maximum de particules simultanées
+            
+            function createFloatingParticles() {
+                // Vérifier s'il y a déjà trop de particules
+                if (activeParticles >= maxParticles) {
+                    // Si trop de particules actives, attendre avant de créer plus
+                    setTimeout(createFloatingParticles, 1000);
+                    return;
+                }
+                
+                // Nombre de particules à créer (réduit)
+                const totalParticles = 60;
+                
+                for (let i = 0; i < totalParticles; i++) {
+                    setTimeout(() => {
+                        // Limiter la création si on atteint le maximum
+                        if (activeParticles >= maxParticles) return;
+                        
+                        activeParticles++;
+                        
+                        // Créer une particule
+                        const particle = document.createElement('div');
+                        particle.className = 'floating-particle';
+                        
+                        // Taille aléatoire mais petite
+                        const size = Math.random() * 1.2 + 0.4;
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        
+                        // Position initiale aléatoire
+                        const startX = Math.random() * window.innerWidth;
+                        const startY = Math.random() * window.innerHeight;
+                        
+                        particle.style.left = startX + 'px';
+                        particle.style.top = startY + 'px';
+                        particle.style.opacity = Math.random() * 0.5 + 0.2;
+                        
+                        document.body.appendChild(particle);
+                        
+                        // Animation de flottement
+                        anime({
+                            targets: particle,
+                            translateX: function() {
+                                return anime.random(200, 500) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            translateY: function() {
+                                return anime.random(-100, 150) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            opacity: [
+                                { value: Math.random() * 0.7 + 0.3, duration: 500 },
+                                { value: 0, duration: 500, delay: 5000 }
+                            ],
+                            duration: 6000,
+                            easing: 'easeOutSine',
+                            complete: function() {
+                                particle.remove();
+                                activeParticles--; // Décrémenter le compteur quand une particule disparaît
+                            }
+                        });
+                    }, i * 100); // Ralentir la création en augmentant l'intervalle
+                }
+                
+                // Attendre plus longtemps avant de recréer des particules
+                setTimeout(createFloatingParticles, 10000);
+            }
+            
+            // Démarrer l'animation des particules flottantes
+            createFloatingParticles();
+        });
+    </script>
+</body>
+</html>
