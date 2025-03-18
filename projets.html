@@ -1,443 +1,391 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>Guerre-galactique</title> <!-- Styles CSS organisés par composants --> <style>
-        /* Styles de base */ body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets | Arnaud Barotteaux - Développeur Web</title>
+    <style>
+        * {
             margin: 0;
-            overflow: hidden;
-            background: #000;
-            color: white;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
         }
 
-        /* Canvas du jeu */ #gameCanvas {
-            width: 100vw;
-            height: 100vh;
+        body {
+            min-height: 100vh;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .hero {
+            min-height: 100vh;
+            width: 100%;
             position: relative;
+            background-color: #f5f5f5;
         }
 
-        /* Interface utilisateur */ .stats {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 20px;
-            z-index: 10;
+        .hero-image {
+            position: fixed;
+            height: 100vh;
+            width: 100%;
+            object-fit: cover;
+            z-index: 1;
         }
 
-        #coinsCount {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 20px;
-            z-index: 10;
-        }
-
-        /* Conteneur vidéo */ #videoContainer {
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: none;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.8);
-            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
         }
 
-        #powerUpVideo {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .content {
+            position: relative;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            z-index: 3;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 3px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+        
+        nav ul li a.active {
+            border-bottom: 1px solid white;
+        }
+        
+        /* Particules flottantes sur toute la page */
+        .floating-particle {
+            position: fixed;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        .page-title {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .projects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .project-card {
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
             object-fit: cover;
         }
 
-        /* Écrans de fin de jeu */ #gameOverContainer {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2000;
-            background: rgba(0, 0, 0, 0.9);
-            color: red;
-            font-family: Arial, sans-serif;
+        .project-info {
+            padding: 1.5rem;
         }
 
-        #continueCounter {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 100px;
-            text-align: center;
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
         }
 
-        #gameOverMessage {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #000;
-            color: red;
-            padding: 50px;
-            font-size: 100px;
-            border: 5px solid red;
-            z-index: 2001;
-            text-align: center;
+        .project-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .project-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid white;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-link:hover {
+            opacity: 0.7;
+        }
+
+        .footer {
+            margin-top: auto;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav {
+                margin-top: 1rem;
+            }
+            
+            nav ul li {
+                margin-left: 0;
+                margin-right: 1.5rem;
+            }
+            
+            .projects-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 <body>
-    <!-- Interface utilisateur --> <span id="coinsCount">0</span> <div class="stats">
-        Vies: <span id="livesCount">3</span><br /> Ennemis tués: <span id="enemiesKilledCount">0</span>
+    <div class="hero">
+        <img src="/desert.jpg" alt="Arbre isolé dans un désert de neige" class="hero-image">
+        <div class="overlay"></div>
+        <div class="content">
+            <header>
+                <div class="logo">
+                    ARNAUD BAROTTEAUX
+                    <div class="subtitle">DEEN DESIGNER</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="projets.html" class="active">PROJETS</a></li>
+                        <li><a href="competences.html">COMPÉTENCES</a></li>
+                        <li><a href="contact.html">CONTACT</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="page-title">
+                <h1>MES PROJETS</h1>
+            </div>
+            
+            <div class="projects-container">
+                <div class="project-card">
+                    <img src="/IMG/e-co.png " alt="Capture d'écran du projet 1" class="project-image">
+                    <div class="project-info">
+                        <h2 class="project-title">HARMONIE</h2>
+                        <p class="project-description">Une plateforme interactive dédiée à la méditation et au bien-être, conçue avec React et Node.js. Interface minimaliste centrée sur l'expérience utilisateur.</p>
+                        <a href="#" class="project-link">VOIR LE PROJET</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="/IMG/image.png" alt="Capture d'écran du projet 2" class="project-image">
+                    <div class="project-info">
+                        <h2 class="project-title">ÉCOSYSTÈME</h2>
+                        <p class="project-description">Site vitrine pour une association écologique utilisant des technologies éco-responsables. Optimisation des performances et accessibilité WCAG AAA.</p>
+                        <a href="#" class="project-link">VOIR LE PROJET</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="/projet3.png" alt="Capture d'écran du projet 3" class="project-image">
+                    <div class="project-info">
+                        <h2 class="project-title">PERSPECTIVE</h2>
+                        <p class="project-description">Application web de visualisation de données avec D3.js. Tableaux de bord interactifs et rapports dynamiques pour une entreprise de consulting.</p>
+                        <a href="#" class="project-link">VOIR LE PROJET</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="/api/placeholder/400/320" alt="Capture d'écran du projet 4" class="project-image">
+                    <div class="project-info">
+                        <h2 class="project-title">LUMIÈRE</h2>
+                        <p class="project-description">Portfolio photographique avec galerie dynamique. Traitement d'images côté serveur et chargement progressif pour une expérience fluide.</p>
+                        <a href="#" class="project-link">VOIR LE PROJET</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="/api/placeholder/400/320" alt="Capture d'écran du projet 5" class="project-image">
+                    <div class="project-info">
+                        <h2 class="project-title">MINUIT</h2>
+                        <p class="project-description">E-commerce pour une marque de montres de luxe. Système de paiement sécurisé et parcours d'achat optimisé pour la conversion.</p>
+                        <a href="#" class="project-link">VOIR LE PROJET</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="/api/placeholder/400/320" alt="Capture d'écran du projet 6" class="project-image">
+                    <div class="project-info">
+                        <h2 class="project-title">HORIZON</h2>
+                        <p class="project-description">Application mobile hybride développée avec Flutter. Système de notifications et synchronisation hors-ligne pour faciliter le travail nomade.</p>
+                        <a href="#" class="project-link">VOIR LE PROJET</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                &copy; 2025 Arnaud Barotteaux. Tous droits réservés.
+            </div>
+        </div>
     </div>
-    <!-- Canvas du jeu --> <canvas id="gameCanvas"></canvas> <!-- Conteneur vidéo pour les power-ups --> <div id="videoContainer">
-        <video id="powerUpVideo" src="video/tirePlasma.mp4"></video>
-    </div>
-    <!-- Conteneurs pour le game over --> <div id="gameOverContainer">
-        <div id="continueCounter"></div>
-    </div>
-    <div id="gameOverMessage">
-        GAME OVER
-    </div>
+    
     <script>
-        const canvas = document.getElementById("gameCanvas"); const ctx = canvas.getContext("2d"); function resizeCanvas() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        } resizeCanvas(); window.addEventListener("resize", resizeCanvas); const soundEffects = {
-            shoot: new Audio("audio/tire1.mp3"),
-            hit: new Audio("audio/hit.mp3"),
-            coin: new Audio("audio/coin.mp3"),
-            king: new Audio("audio/king.mp3"),
-            perfect: new Audio("audio/perfect.mp3"),
-            doubleKill: new Audio("audio/doubleKill.mp3"),
-            tripleKill: new Audio("audio/tripleKill.mp3"),
-            brutal: new Audio("audio/brutal.mp3"),
-            super: new Audio("audio/super.mp3"),
-            master: new Audio("audio/master.mp3"),
-            awesome: new Audio("audio/awesome.mp3")
-        }; soundEffects.shoot.loop = true; const volumes = {
-            shoot: 0.3,
-            hit: 1.0,
-            coin: 0.4,
-            king: 0.7,
-            perfect: 1.0,
-            doubleKill: 0.7,
-            tripleKill: 0.5,
-            brutal: 1.0,
-            super: 1.0,
-            master: 1.0,
-            awesome: 1.0
-        }; Object.keys(soundEffects).forEach(key => {
-                soundEffects[key].volume = volumes[key] || 1.0;
-            });
-
-        const starshipImg = new Image();
-        starshipImg.src = "img/starship.jpg";
-
-        const bulletImg = new Image();
-        bulletImg.src = "img/bullets.jpg";
-
-        const enemyImgs = Array(6).fill().map(() => new Image());
-        enemyImgs.forEach((img, i) => {
-            img.src = img/enemy${i ? i + 1: ""}.jpg;
-        });
-
-        const enemyBulletImgs = Array(3).fill().map(() => new Image());
-        enemyBulletImgs.forEach((img, i) => {
-            img.src = img/bullets${i + 2}.jpg;
-        });
-
-        const livesImg = new Image();
-        livesImg.src = "img/lives.jpg";
-
-        const powerUpImgs = Array(3).fill().map(() => new Image());
-        powerUpImgs.forEach((img, i) => {
-            img.src = "img/powerUp${i || ""}.png";
-        }); const videoContainer = document.getElementById("videoContainer"); const powerUpVideo = document.getElementById("powerUpVideo"); const timecodes = {
-            firstPause: 7,
-            firstResume: 9.06
-        }; class GameObject {
-            constructor(x, y, speed = 1.5) {
-                this.x = x; this.y = y; this.speed = speed; this.width = 30; this.height = 30; this.direction = {
-                    x: (Math.random() * 2 - 1) * speed,
-                    y: (Math.random() * 2 - 1) * speed
-                };
-            } moveRandomly(canvas) {
-                this.x += this.direction.x; this.y += this.direction.y; if (this.x <= 0 || this.x >= canvas.width - this.width) {
-                    this.direction.x *= -1;
-                } if (this.y <= 0 || this.y >= canvas.height - this.height) {
-                    this.direction.y *= -1;
-                } if (Math.random() < 0.005) {
-                    this.direction.x = (Math.random() * 2 - 1) * this.speed; this.direction.y = (Math.random() * 2 - 1) * this.speed;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Créer des particules flottantes sur toute la page
+            // Limiter le nombre de particules actives
+            let activeParticles = 0;
+            const maxParticles = 100; // Nombre maximum de particules simultanées
+            
+            function createFloatingParticles() {
+                // Vérifier s'il y a déjà trop de particules
+                if (activeParticles >= maxParticles) {
+                    // Si trop de particules actives, attendre avant de créer plus
+                    setTimeout(createFloatingParticles, 1000);
+                    return;
                 }
-            }
-        } class BonusManager {
-            constructor() {
-                this.powerUps = []; this.lives = [];
-            } addPowerUp(type) {
-                this.powerUps.push({
-                    x: Math.random() * canvas.width, y: -50, width: 40, height: 40, speed: 1, type: type || Math.floor(Math.random() * 2)
-                });
-            } addLife() {
-                this.lives.push({
-                    x: Math.random() * canvas.width, y: -50, width: 40, height: 40, speed: 2
-                });
-            } update() {
-                if (gameManager.isPaused) return; this.powerUps.forEach(powerUp => {
-                    powerUp.y += powerUp.speed; powerUp.x += Math.sin(Date.now() * 0.002) * 2; powerUp.x = Math.max(0, Math.min(canvas.width - powerUp.width, powerUp.x));
-                }); this.lives.forEach(life => {
-                    life.y += life.speed; life.x += Math.sin(Date.now() * 0.001) * 1.5; life.x = Math.max(0, Math.min(canvas.width - life.width, life.x));
-                }); this.powerUps = this.powerUps.filter(powerUp => powerUp.y < canvas.height); this.lives = this.lives.filter(life => life.y < canvas.height);
-            } draw(ctx) {
-                this.powerUps.forEach(powerUp => {
-                    ctx.drawImage(powerUpImgs[powerUp.type], powerUp.x, powerUp.y, powerUp.width, powerUp.height);
-                }); this.lives.forEach(life => {
-                    ctx.drawImage(livesImg, life.x, life.y, life.width, life.height);
-                });
-            } checkCollisions(starship, handlePowerUp, handleLife) {
-                this.powerUps = this.powerUps.filter(powerUp => {
-                    if (checkCollision(starship, powerUp)) {
-                        handlePowerUp(powerUp.type); return false;
-                    } return true;
-                }); this.lives = this.lives.filter(life => {
-                    if (checkCollision(starship, life)) {
-                        handleLife(); return false;
-                    } return true;
-                });
-            }
-        } class GameManager {
-            constructor(canvas) {
-                this.canvas = canvas; this.isPaused = false; this.setupPauseControl();
-            } setupPauseControl() {
-                window.addEventListener("mousedown",
-                    (e) => {
-                        if (e.button === 1) {
-                            e.preventDefault(); this.togglePause();
-                        }
-                    });
-            } togglePause() {
-                this.isPaused = !this.isPaused; if (this.isPaused) {
-                    soundEffects.shoot.pause();
-                } else if (shooting) {
-                    soundEffects.shoot.play();
-                }
-            } draw(ctx) {
-                if (this.isPaused) {
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "white"; ctx.font = "48px Arial"; ctx.textAlign = "center"; ctx.fillText("PAUSE", canvas.width / 2, canvas.height / 2);
-                }
-            }
-        } const gameManager = new GameManager(canvas); const bonusManager = new BonusManager(); const starship = {
-            x: canvas.width / 2,
-            y: canvas.height - 50,
-            width: 30,
-            height: 30,
-            bullets: [],
-            powerUpLevel: 0,
-        }; let shooting = false; let enemies = []; let enemyBullets = []; let enemiesKilled = 0; let playerLives = 3; let simultaneousKills = 0; let killTimer = null; let redPoints = []; let coins = 0; let killsWithoutDeath = 0; function playSound(sound) {
-            sound.currentTime = 0; sound.play();
-        } function checkCollision(rect1, rect2) {
-            return (rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y);
-        } function handleKill() {
-            simultaneousKills++; enemiesKilled++; killsWithoutDeath++; document.getElementById("enemiesKilledCount").innerText = enemiesKilled; if (killsWithoutDeath === 20) {
-                playSound(soundEffects.brutal);
-            } else if (killsWithoutDeath === 30) {
-                playSound(soundEffects.super);
-            } else if (killsWithoutDeath === 40) {
-                playSound(soundEffects.master);
-            } else if (killsWithoutDeath === 60) {
-                playSound(soundEffects.awesome);
-            } if (enemiesKilled % 30 === 0) {
-                bonusManager.addPowerUp(2); playSound(soundEffects.king);
-            } else if (enemiesKilled % 5 === 0) {
-                if (Math.random() < 0.5) {
-                    bonusManager.addPowerUp();
-                } else {
-                    bonusManager.addLife();
-                }
-            } clearTimeout(killTimer); killTimer = setTimeout(() => {
-                    if (simultaneousKills === 2) {
-                        playSound(soundEffects.doubleKill);
-                    } else if (simultaneousKills >= 3) {
-                        playSound(soundEffects.tripleKill);
-                    } simultaneousKills = 0;
-                },
-                200);
-        } function activatePowerUp(powerUpType) {
-            if (powerUpType === 2) {
-                gameManager.isPaused = true; videoContainer.style.display = "block"; powerUpVideo.currentTime = 0; powerUpVideo.play().catch((error) => {
-                    console.error("Erreur de lecture vidéo:", error); endPowerUpVideo();
-                }); powerUpVideo.onended = endPowerUpVideo;
-            } else {
-                starship.powerUpLevel = powerUpType + 1; setTimeout(() => {
-                    if (starship.powerUpLevel === powerUpType + 1) {
-                        starship.powerUpLevel = 0;
-                    }
-                },
-                    10000);
-            }
-        } function endPowerUpVideo() {
-            videoContainer.style.display = "none"; gameManager.isPaused = false; enemies = []; enemyBullets = []; starship.powerUpLevel = 3; setTimeout(() => {
-                if (starship.powerUpLevel === 3) {
-                    starship.powerUpLevel = 0;
-                }
-            },
-                10000);
-        } function shootBullet() {
-            if (!shooting || gameManager.isPaused) return; switch (starship.powerUpLevel) {
-                case 0: Tir normal starship.bullets.push({
-                    x: starship.x + starship.width / 2 - 2.5, y: starship.y, width: 5, height: 10, speed: 20
-                }); break; case 1: Tir triple [-15,
-                    -2.5,
-                    10].forEach((xOffset) => {
-                        starship.bullets.push({
-                            x: starship.x + starship.width / 2 + xOffset, y: starship.y, width: 5, height: 10, speed: 7
+                
+                // Nombre de particules à créer (réduit)
+                const totalParticles = 60;
+                
+                for (let i = 0; i < totalParticles; i++) {
+                    setTimeout(() => {
+                        // Limiter la création si on atteint le maximum
+                        if (activeParticles >= maxParticles) return;
+                        
+                        activeParticles++;
+                        
+                        // Créer une particule
+                        const particle = document.createElement('div');
+                        particle.className = 'floating-particle';
+                        
+                        // Taille aléatoire mais petite
+                        const size = Math.random() * 1.2 + 0.4;
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        
+                        // Position initiale aléatoire
+                        const startX = Math.random() * window.innerWidth;
+                        const startY = Math.random() * window.innerHeight;
+                        
+                        particle.style.left = startX + 'px';
+                        particle.style.top = startY + 'px';
+                        particle.style.opacity = Math.random() * 0.5 + 0.2;
+                        
+                        document.body.appendChild(particle);
+                        
+                        // Animation de flottement
+                        anime({
+                            targets: particle,
+                            translateX: function() {
+                                return anime.random(200, 500) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            translateY: function() {
+                                return anime.random(-100, 150) * (Math.random() > 0.5 ? 1 : -1);
+                            },
+                            opacity: [
+                                { value: Math.random() * 0.7 + 0.3, duration: 500 },
+                                { value: 0, duration: 500, delay: 5000 }
+                            ],
+                            duration: 6000,
+                            easing: 'easeOutSine',
+                            complete: function() {
+                                particle.remove();
+                                activeParticles--; // Décrémenter le compteur quand une particule disparaît
+                            }
                         });
-                    }); break; case 2: case 3: const bulletConfigs = [ {
-                            vx: 0,
-                            vy: 0
-                        },
-                        {
-                            vx: 5,
-                            vy: 0
-                        },
-                        {
-                            vx: -5,
-                            vy: 0
-                        },
-                        {
-                            vx: 5,
-                            vy: 5
-                        },
-                        {
-                            vx: -5,
-                            vy: 5
-                        }]; bulletConfigs.forEach((config) => {
-                            starship.bullets.push({
-                                x: starship.x + starship.width / 2 - 2.5, y: starship.y, width: 5, height: 10, speed: 7, ...config
-                            });
-                        }); break;
-            }
-        } function shootEnemyBullets() {
-            if (gameManager.isPaused) return; enemies.forEach((enemy) => {
-                if (enemy.type === 1) {
-                    enemyBullets.push( {
-                        x: enemy.x, y: enemy.y + enemy.height / 2, width: 10, height: 15, speed: 0, vx: -5, type: 1
-                    }, {
-                        x: enemy.x + enemy.width, y: enemy.y + enemy.height / 2, width: 10, height: 15, speed: 0, vx: 5, type: 1
-                    });
-                } else {
-                    enemyBullets.push({
-                        x: enemy.x + enemy.width / 2 - 2.5, y: enemy.y + enemy.height, width: 10, height: 15, speed: 3, type: Math.floor(Math.random() * 3)
-                    });
+                    }, i * 100); // Ralentir la création en augmentant l'intervalle
                 }
-        });
-    } function generateEnemies() {
-        if (gameManager.isPaused) return; for (let i = 0; i < 7; i++) {
-            enemies.push({
-                x: Math.random() * canvas.width, y: (Math.random() * canvas.height) / 2, width: 50, height: 50, vx: Math.random() * 4 - 2, vy: Math.random() * 4 - 2, type: Math.floor(Math.random() * 6)
-        });
-    }
-} drawStarship() {
-    ctx.drawImage(starshipImg, starship.x, starship.y, starship.width, starship.height);
-} function drawBullets() {
-    starship.bullets = starship.bullets.filter((bullet) => bullet.y > 0); starship.bullets.forEach((bullet) => {
-        ctx.drawImage(bulletImg, bullet.x, bullet.y, bullet.width, bullet.height); bullet.y -= bullet.speed; if (bullet.vx) bullet.x += bullet.vx; if (bullet.vy) bullet.y += bullet.vy;
-    });
-} function drawEnemies() {
-    enemies.forEach((enemy, index) => {
-        ctx.drawImage(enemyImgs[enemy.type], enemy.x, enemy.y, enemy.width, enemy.height); enemy.x += enemy.vx; enemy.y += enemy.vy; if (enemy.x <= 0 || enemy.x + enemy.width >= canvas.width) enemy.vx *= -1; if (enemy.y <= 0) enemy.vy *= -1; if (enemy.y + enemy.height >= canvas.height) enemies.splice(index, 1);
-    });
-} function drawEnemyBullets() {
-    enemyBullets = enemyBullets.filter((bullet) => bullet.y < canvas.height && bullet.x > 0 && bullet.x < canvas.width); enemyBullets.forEach((bullet) => {
-        ctx.drawImage(enemyBulletImgs[bullet.type], bullet.x, bullet.y, bullet.width, bullet.height); if (bullet.vx) bullet.x += bullet.vx; else bullet.y += bullet.speed;
-    });
-} function checkCollisions() {
-    for (let i = enemies.length - 1; i >= 0; i--) {
-        const enemy = enemies[i]; let enemyHit = false; Vérification des collisions balles-ennemis for (let j = starship.bullets.length - 1; j >= 0; j--) {
-            const bullet = starship.bullets[j]; if (checkCollision(bullet, enemy)) {
-                playSound(soundEffects.hit); starship.bullets.splice(j, 1); enemyHit = true; Génération des points rouges for (let k = 0; k < 30; k++) {
-                    redPoints.push({
-                        x: enemy.x + Math.random() * enemy.width, y: enemy.y + Math.random() * enemy.height
-                    });
-                } handleKill(); break;
+                
+                // Attendre plus longtemps avant de recréer des particules
+                setTimeout(createFloatingParticles, 10000);
             }
-        } if (enemyHit) {
-            enemies.splice(i, 1); continue;
-        } if (checkCollision(starship, enemy)) {
-            playSound(soundEffects.hit); playerLives--; killsWithoutDeath = 0; document.getElementById("livesCount").innerText = playerLives; enemies.splice(i, 1); if (playerLives <= 0) gameOver();
-        }
-    } enemyBullets = enemyBullets.filter((bullet) => {
-            if (checkCollision(starship, bullet)) {
-                playSound(soundEffects.hit); playerLives--; document.getElementById("livesCount").innerText = playerLives; if (playerLives <= 0) gameOver(); return false;
-            } return true;
-        }); bonusManager.checkCollisions(starship,
-        (type) => activatePowerUp(type),
-        () => {
-            playerLives++; document.getElementById("livesCount").innerText = playerLives;
-        });
-} function drawRedPoints() {
-    redPoints.forEach((point, index) => {
-        ctx.fillStyle = "red"; ctx.fillRect(point.x, point.y, 2, 2); point.y += 1; Vitesse de chute const dx = starship.x - point.x; const dy = starship.y - point.y; const distance = Math.sqrt(dx * dx + dy * dy); Attraction vers le vaisseau if (distance < 100) {
-            point.x += (dx / distance) * 3; point.y += (dy / distance) * 3;
-        } if (Math.abs(point.x - starship.x) < 30 && Math.abs(point.y - starship.y) < 30) {
-            coins += 0.5; document.getElementById("coinsCount").textContent = coins.toFixed(1); playSound(soundEffects.coin); redPoints.splice(index, 1);
-        } if (point.y > canvas.height) {
-            redPoints.splice(index, 1);
-        }
-    });
-}
-} function update() {
-if (gameManager.isPaused) {
-    requestAnimationFrame(update); return;
-} try {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); drawStarship(); drawBullets(); drawEnemies(); drawEnemyBullets(); drawRedPoints(); bonusManager.update(); bonusManager.draw(ctx); gameManager.draw(ctx); checkCollisions();
-} catch (error) {
-    console.error("Erreur dans la boucle de jeu:", error);
-} requestAnimationFrame(update);
-} window.addEventListener("mousemove", (event) => {
-    if (!gameManager.isPaused) {
-        starship.x = Math.max(0, Math.min(canvas.width - starship.width, event.clientX - starship.width / 2)); starship.y = Math.max(0, Math.min(canvas.height - starship.height, event.clientY - starship.height / 2 + 20));
-    }
-}); Gestion des tirs window.addEventListener("mousedown", (e) => {
-    if (e.button === 0) {
-        shooting = true; soundEffects.shoot.play();
-    }
-}); window.addEventListener("mouseup", (e) => {
-    if (e.button === 0) {
-        shooting = false; soundEffects.shoot.pause(); soundEffects.shoot.currentTime = 0;
-    }
-}); powerUpVideo.addEventListener("timeupdate", () => {
-    if (powerUpVideo.currentTime >= timecodes.firstPause && powerUpVideo.currentTime < timecodes.firstResume) {
-        powerUpVideo.currentTime = timecodes.firstResume;
-    }
-}); Promise.all([...enemyImgs, ...enemyBulletImgs, ...powerUpImgs, starshipImg, bulletImg, livesImg].map(img => new Promise(resolve => {
-        img.onload = resolve; img.onerror = () => {
-            console.error("Erreur de chargement pour:", img.src); resolve();
-        };
-    }))) .then(() => {
-    try {
-        update(); const intervals = [setInterval(shootBullet, 100),
-            setInterval(generateEnemies, 5000),
-            setInterval(shootEnemyBullets, 1000),
-            setInterval(() => {
-                if (!gameManager.isPaused) {
-                    enemies.forEach(enemy => {
-                        if (enemy.type === 1) shootEnemyBullets();
-                    });
-                }
-            }, 500)]; window.addEventListener("beforeunload", () => {
-                intervals.forEach(clearInterval);
+            
+            // Démarrer l'animation des particules flottantes
+            createFloatingParticles();
+            
+            // Animation d'apparition des cartes de projet
+            anime({
+                targets: '.project-card',
+                opacity: [0, 1],
+                translateY: [50, 0],
+                delay: anime.stagger(200),
+                easing: 'easeOutSine',
+                duration: 800
             });
-    } catch (error) {
-        console.error("Erreur au démarrage du jeu:", error);
-    }
-}) .catch(error => {
-    console.error("Erreur lors du chargement des ressources:", error);
-});
-</script>
+        });
+    </script>
 </body>
-</html> 
+</html>
